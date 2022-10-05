@@ -1,14 +1,17 @@
 package com.nlxa.java.controller;
 
-import com.nlxa.java.dto.client.request.AddClientRequest;
-import com.nlxa.java.dto.client.response.ClientResponse;
 import com.nlxa.java.dto.invoice.request.AddInvoiceRequest;
 import com.nlxa.java.dto.invoice.response.InvoiceListResponse;
 import com.nlxa.java.dto.invoice.response.InvoiceResponse;
+import com.nlxa.java.exceptions.IncompleteDataException;
 import com.nlxa.java.usecase.invoice.AddInvoice;
 import com.nlxa.java.usecase.invoice.GetAllInvoices;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.Future;
 
 @Slf4j
 @RestController
@@ -23,30 +26,59 @@ public class InvoiceController {
         this.addInvoice = addInvoice;
     }
 
-    @GetMapping(value = "all")
-    public InvoiceListResponse getAllInvoices() {
+    /**
+     * Return a list of Invoices
+     *
+     * @return ResponseEntity<Future<InvoiceListResponse>>
+     */
+    @GetMapping(value = "/all")
+    public ResponseEntity<Future<InvoiceListResponse>> getAllInvoices() {
         log.info("Call to: InvoiceController.getAllInvoicess()");
-        InvoiceListResponse invoiceListResponse = null;
+        Future<InvoiceListResponse> response = null;
 
         try {
-            invoiceListResponse = this.getAllInvoices.execute();
-        } catch (Exception ex) {
-            log.error("Error in: InvoiceController.getAllInvoices()", ex);
+            response = this.getAllInvoices.execute();
+        } catch (IncompleteDataException ie) {
+            log.error("Error in: InvoiceController.getAllInvoices() | IncompleteDataException | " + ie.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e){
+            log.error("Error in: InvoiceController.getAllInvoices() | IllegalArgumentException | " + e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException eo) {
+            log.error("Error in: InvoiceController.getAllInvoices() | NullPointerException | " + eo.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } finally {
+            log.info("[+] Response values in InvoiceController.getAllInvoices: " + response.toString());
         }
 
-        return invoiceListResponse;
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * Insert a new Invoice
+     *
+     * @param request AddInvoiceRequest
+     * @return ResponseEntity<Future<InvoiceResponse>>
+     */
     @PostMapping(value = "/add")
-    public InvoiceResponse addInvoice(@RequestBody AddInvoiceRequest request) {
+    public ResponseEntity<Future<InvoiceResponse>> addInvoice(@RequestBody AddInvoiceRequest request) {
         log.info("Call to: InvoiceController.addInvoice()");
-        InvoiceResponse response = null;
+        Future<InvoiceResponse> response = null;
 
         try {
             response = this.addInvoice.execute(request);
-        }catch (Exception e){
-            log.error("Error in: InvoiceController.addInvoice()", e);
+        } catch (IncompleteDataException ie) {
+            log.error("Error in: InvoiceController.addInvoice() | IncompleteDataException | " + ie.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e){
+            log.error("Error in: InvoiceController.addInvoice() | IllegalArgumentException | " + e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (NullPointerException eo) {
+            log.error("Error in: InvoiceController.addInvoice() | NullPointerException | " + eo.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } finally {
+            log.info("[+] Request values in InvoiceController.addInvoice: " + request.toString());
         }
-        return response;
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -11,15 +11,12 @@ import java.io.Serializable;
 public class ProductResponse implements Serializable {
 
     private String productId;
-    private String description;
-    private float price;
+
 
     public ProductResponse() {
     }
 
     public ProductResponse(Product product) {
         setProductId(product.getProductId());
-        setDescription(product.getDescription());
-        setPrice(product.getPrice());
     }
 }

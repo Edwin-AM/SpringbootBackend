@@ -1,10 +1,13 @@
 package com.nlxa.java.usecase.invoice;
 
 import com.nlxa.java.Invoice.InvoiceBusiness;
+import com.nlxa.java.config.AsyncResponse;
 import com.nlxa.java.dto.invoice.response.InvoiceListResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -17,15 +20,16 @@ public class GetAllInvoices {
         this.invoiceBusiness = invoiceBusiness;
     }
 
-    public InvoiceListResponse execute(){
-        InvoiceListResponse invoiceListResponse = null;
+    /**
+     * Tries to return a list of Invoice
+     *
+     * @return Future<InvoiceListResponse>
+     */
+    public Future<InvoiceListResponse> execute(){
+        AsyncResponse<InvoiceListResponse> response = null;
 
-        try {
-            invoiceListResponse = this.invoiceBusiness.getAllInvoices();
-        } catch (Exception ex) {
-            log.error("Error in: GetAllInvoices.execute()", ex);
-        }
+        response = new AsyncResponse<>(this.invoiceBusiness.getAllInvoices());
 
-        return invoiceListResponse;
+        return response;
     }
 }

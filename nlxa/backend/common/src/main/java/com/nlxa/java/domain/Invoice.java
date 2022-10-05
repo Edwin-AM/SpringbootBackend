@@ -6,12 +6,13 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "invoice")
-public class Invoice implements Serializable {
-
+public class Invoice implements Serializable{
     @Id
     @Column(name = "invoice_id")
     @GeneratedValue(generator = "ID")
@@ -21,14 +22,28 @@ public class Invoice implements Serializable {
     )
     private String invoiceId;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "client_id")
+    private String clientId;
+
+    @Column(name = "date")
+    private String date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", insertable = false, updatable = false)
+    private Client client;
+
+    @OneToMany(mappedBy = "invoice")
+    private List<Detail> detailList;
 
     public Invoice() {
+        this.invoiceId = "";
+        this.clientId = "";
+        this.client = new Client();
+        this.date = "";
+        this.detailList = new ArrayList<>();
     }
 
     public Invoice(AddInvoiceRequest request) {
         this.invoiceId = request.getInvoiceId();
-        this.description = request.getDescription();
     }
 }

@@ -10,14 +10,11 @@ import java.io.Serializable;
 @Data
 public class InvoiceResponse implements Serializable {
 
-    private String productId;
-    private String description;
-
-    public InvoiceResponse() {
-    }
+    private String invoiceId;
+    private String clientId;
 
     public InvoiceResponse(Invoice invoice) {
-        setProductId(invoice.getInvoiceId());
-        setDescription(invoice.getDescription());
+        this.invoiceId = invoice.getInvoiceId();
+        this.clientId = invoice.getClientId();
     }
 }

@@ -6,12 +6,13 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "Client")
 public class Client {
-
     @Id
     @Column(name = "client_id")
     @GeneratedValue(generator = "ID")
@@ -24,26 +25,29 @@ public class Client {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "password")
-    private String password;
+    @Column(name = "lastname")
+    private String lastName;
 
-    @Column(name = "email")
-    private String email;
+    @OneToMany(mappedBy = "client")
+    private List<Invoice> invoiceList;
 
     public Client() {
+        this.clientId = "";
+        this.name = "";
+        this.lastName = "";
+        this.invoiceList = new ArrayList<>();
     }
 
     public Client(AddClientRequest request) {
         this.clientId = request.getClientId();
         this.name = request.getName();
-        this.password = request.getPassword();
-        this.email = request.getEmail();
+        this.lastName = request.getLastName();
+        this.invoiceList = request.getInvoiceList();
     }
 
     public Client(UpdateClientRequest request) {
         this.clientId = request.getClientId();
         this.name = request.getName();
-        this.password = request.getPassword();
-        this.email = request.getEmail();
+        this.lastName = request.getLastName();
     }
 }

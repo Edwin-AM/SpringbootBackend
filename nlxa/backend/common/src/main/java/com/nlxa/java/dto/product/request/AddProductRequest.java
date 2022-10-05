@@ -1,5 +1,6 @@
 package com.nlxa.java.dto.product.request;
 
+import com.nlxa.java.domain.Detail;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,12 +10,16 @@ import java.io.Serializable;
 public class AddProductRequest implements Serializable {
 
     private String productId;
-    private String description;
+    private String productName;
     private float price;
 
-    public AddProductRequest(String productId, String description, float price) {
+
+    public AddProductRequest() {
+    }
+
+    public AddProductRequest(String productId, String productName, float price) {
         this.productId = productId;
-        this.description = description;
+        this.productName = productName;
         this.price = price;
     }
 }

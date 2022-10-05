@@ -12,8 +12,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "product")
-public class Product implements Serializable {
-
+public class Product {
     @Id
     @Column(name = "product_id")
     @GeneratedValue(generator = "ID")
@@ -23,11 +22,15 @@ public class Product implements Serializable {
     )
     private String productId;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "product_name")
+    private String productName;
 
     @Column(name = "price")
     private float price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private Detail detail;
 
     public Product() {
 
@@ -35,14 +38,14 @@ public class Product implements Serializable {
 
     public Product(AddProductRequest request) {
         this.productId = request.getProductId();
-        this.description = request.getDescription();
         this.price = request.getPrice();
+        this.productName = request.getProductName();
     }
 
     public Product(UpdateProductRequest request) {
         this.productId = request.getProductId();
-        this.description = request.getDescription();
         this.price = request.getPrice();
+        this.productName = request.getProductName();
     }
 
 }

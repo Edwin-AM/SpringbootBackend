@@ -9,6 +9,10 @@ import java.io.Serializable;
 public class DeleteProductByIdRequest implements Serializable {
 
     private String productId;
+
+    public DeleteProductByIdRequest() {
+    }
+
     @Autowired
     public DeleteProductByIdRequest(String productId) {
         this.productId = productId;

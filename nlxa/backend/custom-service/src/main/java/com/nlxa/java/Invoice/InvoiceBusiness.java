@@ -25,33 +25,36 @@ public class InvoiceBusiness {
         this.invoiceJPAComponent = invoiceJPAComponent;
     }
 
+    /**
+     * Tries to return a list of Invoice
+     *
+     * @return InvoiceListResponse
+     */
     public InvoiceListResponse getAllInvoices() {
         log.info("Call to: InvoiceBusiness.getAllInvoices()");
 
         InvoiceListResponse invoiceListResponse = null;
 
-        try {
-            invoiceListResponse = new InvoiceListResponse();
-            List<Invoice> invoices = this.invoiceJPAComponent.getAll();
-            for (Invoice invoice: invoices) {
-                invoiceListResponse.getInvoiceResponseList().add(new InvoiceResponse(invoice));
-            }
-        } catch (Exception ex) {
-            log.error("Error in: InvoiceBusiness.getAllInvoices() -> Verify that the connection is correct");
+        invoiceListResponse = new InvoiceListResponse();
+        List<Invoice> invoices = this.invoiceJPAComponent.getAll();
+        for (Invoice invoice: invoices) {
+            invoiceListResponse.getInvoiceResponseList().add(new InvoiceResponse(invoice));
         }
 
         return invoiceListResponse;
     }
 
+    /**
+     * Tries to insert a new Invoice
+     *
+     * @param request AddInvoiceRequest
+     * @return InvoiceResponse
+     */
     public InvoiceResponse addInvoice(AddInvoiceRequest request) {
         log.info("Call to: InvoiceBusiness.addInvoice()");
         InvoiceResponse invoiceResponse = null;
 
-        try {
-            invoiceResponse = new InvoiceResponse(this.invoiceJPAComponent.save(new Invoice(request)));
-        } catch (Exception e){
-            log.info("Error in: ProductBusiness.addInvoice()", e);
-        }
+        invoiceResponse = new InvoiceResponse(this.invoiceJPAComponent.save(new Invoice(request))); // Hacer por separado
 
         return invoiceResponse;
     }

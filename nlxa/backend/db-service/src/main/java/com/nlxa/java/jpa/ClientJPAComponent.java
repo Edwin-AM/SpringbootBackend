@@ -33,11 +33,9 @@ public class ClientJPAComponent implements ClientImpl {
     public Client save(Client type) {
         log.info("Call to: ClientJPAComponent.save()");
         Client response = null;
-        try{
-            response = this.clientRepository.save(type);
-        }catch (Exception e){
-            log.error("Error in: ClientJPAComponent.save() -> "+ e.getMessage(), e);
-        }
+
+        response = this.clientRepository.save(type);
+
         return response;
     }
 
@@ -45,22 +43,21 @@ public class ClientJPAComponent implements ClientImpl {
     public Client update(Client type) {
         log.info("Call to: ClientJPAComponent.update()");
         Client response = null;
-        try{
-            response = this.clientRepository.save(type);
-        }catch (Exception e){
-            log.error("Error in: ClientJPAComponent.update() -> "+ e.getMessage(), e);
-        }
+
+        response = this.clientRepository.save(type);
+
         return response;
     }
 
     @Override
     public void delete(Client type) {
-
     }
 
     @Override
     public void deleteById(String s) {
+        log.info("Call to: ClientJPAComponent.deleteById()");
 
+        this.clientRepository.deleteById(s);
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.nlxa.java.usecase.product;
 
+import com.nlxa.java.config.AsyncResponse;
 import com.nlxa.java.dto.product.response.ProductListResponse;
 import com.nlxa.java.product.ProductBusiness;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -17,15 +20,16 @@ public class GetAllProducts {
         this.productBusiness = productBusiness;
     }
 
-    public ProductListResponse execute() {
-        ProductListResponse productListResponse = null;
+    /**
+     * Tries to return a ProductListResponse
+     *
+     * @return ProductListResponse
+     */
+    public Future<ProductListResponse> execute() {
+        AsyncResponse<ProductListResponse> response = null;
 
-        try {
-            productListResponse = this.productBusiness.getAllProducts();
-        } catch (Exception ex) {
-            log.error("Error in: GetAllProducts.execute()", ex);
-        }
+        response = new AsyncResponse<>(this.productBusiness.getAllProducts());
 
-        return productListResponse;
+        return response;
     }
 }

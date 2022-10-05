@@ -1,11 +1,15 @@
 package com.nlxa.java.usecase.client;
 
 import com.nlxa.java.client.ClientBusiness;
+import com.nlxa.java.config.AsyncResponse;
 import com.nlxa.java.dto.client.request.AddClientRequest;
 import com.nlxa.java.dto.client.response.ClientResponse;
+import com.nlxa.java.exceptions.IncompleteDataException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -18,14 +22,29 @@ public class AddClient {
         this.clientBusiness = clientBusiness;
     }
 
-    public ClientResponse execute(AddClientRequest request) {
+    /**
+     * Tries to insert a client, validating its data
+     *
+     * @param request AddClientRequest
+     * @return Future<ClientResponse>
+     * @throws IncompleteDataException
+     * @throws IllegalArgumentException
+     * @throws NullPointerException
+     */
+    public Future<ClientResponse> execute(AddClientRequest request) throws IncompleteDataException,
+            IllegalArgumentException, NullPointerException {
         log.info("Call to: AddClient.execute()");
-        ClientResponse response = null;
-        try {
-            response = this.clientBusiness.addClient(request);
-        }catch (Exception e){
-            log.error("Error in: AddClient.execute()", e);
+        AsyncResponse<ClientResponse> response = null;
+
+        if (request.getClientId().equalsIgnoreCase("") ||
+                request.getName().equalsIgnoreCase("") ||
+                request.getLastName().equalsIgnoreCase("") ||
+                request.getInvoiceList() == null
+        ) {
+            throw new IncompleteDataException("Missing data -> In AddClient.execute()");
         }
+
+        response = new AsyncResponse<>(this.clientBusiness.addClient(request));
         return response;
     }
 }
