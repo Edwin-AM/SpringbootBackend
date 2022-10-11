@@ -37,7 +37,6 @@ public class Product {
     }
 
     public Product(AddProductRequest request) {
-        this.productId = request.getProductId();
         this.price = request.getPrice();
         this.productName = request.getProductName();
     }

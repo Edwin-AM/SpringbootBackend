@@ -35,8 +35,7 @@ public class AddClient {
         AsyncResponse<ClientResponse> response = null;
 
         try {
-            if (request.getClientId().equalsIgnoreCase("") ||
-                    request.getName().equalsIgnoreCase("") ||
+            if (request.getName().equalsIgnoreCase("") ||
                     request.getLastName().equalsIgnoreCase("") ||
                     request.getInvoiceList() == null
             ) {

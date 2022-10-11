@@ -1,6 +1,7 @@
 package com.nlxa.java.jpa;
 
 
+import com.nlxa.java.domain.Client;
 import com.nlxa.java.domain.Product;
 import com.nlxa.java.impl.ProductImpl;
 import com.nlxa.java.repository.ProductRepository;
@@ -37,7 +38,16 @@ public class ProductJPAComponent implements ProductImpl {
 
     @Override
     public Product getById(String s) {
-        return null;
+        log.info("Call to: ProductJPAComponent.getById()");
+        Product response = null;
+
+        try {
+            response = this.productRepository.findById(s).orElse(null);
+        } catch (Exception e) {
+            log.error("Error in ProductJPAComponent.getById " + e.getMessage());
+        }
+
+        return response;
     }
 
     @Override
@@ -66,7 +76,12 @@ public class ProductJPAComponent implements ProductImpl {
 
     @Override
     public void delete(Product type) {
-
+        log.info("Call to: ProductJPAComponent.delete()");
+        try {
+            this.productRepository.delete(type);
+        } catch (Exception e){
+            log.error("Error in: ProductJPAComponent.delete() -> "+ e.getMessage(), e);
+        }
     }
 
     @Override

@@ -37,8 +37,7 @@ public class AddProduct {
         AsyncResponse<ProductResponse> response = null;
 
         try {
-            if (request.getProductId().equalsIgnoreCase("") ||
-                    request.getPrice() <= 0 ||
+            if (request.getPrice() <= 0 ||
                     request.getProductName().equalsIgnoreCase("")
             ) {
                 throw new RequestException("Error in AddProduct.execute", "Incomplete data");

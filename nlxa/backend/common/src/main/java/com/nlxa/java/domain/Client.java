@@ -39,7 +39,6 @@ public class Client {
     }
 
     public Client(AddClientRequest request) {
-        this.clientId = request.getClientId();
         this.name = request.getName();
         this.lastName = request.getLastName();
         this.invoiceList = request.getInvoiceList();

@@ -37,8 +37,7 @@ public class AddInvoice {
         AsyncResponse<InvoiceResponse> response = null;
 
         try {
-            if (request.getInvoiceId().equalsIgnoreCase("") ||
-                    request.getClient() == null ||
+            if (request.getClient() == null ||
                     request.getClientId().equalsIgnoreCase("") ||
                     request.getDate().equalsIgnoreCase("") ||
                     request.getDetailList() == null

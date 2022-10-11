@@ -10,8 +10,6 @@ import java.util.List;
 
 @Data
 public class AddInvoiceRequest implements Serializable {
-
-    private String invoiceId;
     private String clientId;
     private String date;
     private Client client;
@@ -20,8 +18,7 @@ public class AddInvoiceRequest implements Serializable {
     public AddInvoiceRequest() {
     }
 
-    public AddInvoiceRequest(String invoiceId, String clientId, String date, Client client, List<Detail> detailList) {
-        this.invoiceId = invoiceId;
+    public AddInvoiceRequest(String clientId, String date, Client client, List<Detail> detailList) {
         this.clientId = clientId;
         this.date = date;
         this.client = client;

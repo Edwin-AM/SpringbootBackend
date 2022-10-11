@@ -44,6 +44,9 @@ public class Invoice implements Serializable{
     }
 
     public Invoice(AddInvoiceRequest request) {
-        this.invoiceId = request.getInvoiceId();
+        this.clientId = request.getClientId();
+        this.client = request.getClient();
+        this.date = request.getDate();
+        this.detailList = request.getDetailList();
     }
 }

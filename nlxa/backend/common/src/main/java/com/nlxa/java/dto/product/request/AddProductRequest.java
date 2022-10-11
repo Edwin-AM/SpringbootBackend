@@ -8,8 +8,6 @@ import java.io.Serializable;
 
 @Data
 public class AddProductRequest implements Serializable {
-
-    private String productId;
     private String productName;
     private float price;
 
@@ -17,8 +15,7 @@ public class AddProductRequest implements Serializable {
     public AddProductRequest() {
     }
 
-    public AddProductRequest(String productId, String productName, float price) {
-        this.productId = productId;
+    public AddProductRequest(String productName, float price) {
         this.productName = productName;
         this.price = price;
     }

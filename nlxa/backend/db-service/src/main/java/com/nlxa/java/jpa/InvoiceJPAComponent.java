@@ -1,5 +1,6 @@
 package com.nlxa.java.jpa;
 
+import com.nlxa.java.domain.Client;
 import com.nlxa.java.domain.Invoice;
 import com.nlxa.java.domain.Product;
 import com.nlxa.java.impl.InvoiceImpl;
@@ -35,7 +36,16 @@ public class InvoiceJPAComponent implements InvoiceImpl {
 
     @Override
     public Invoice getById(String s) {
-        return null;
+        log.info("Call to: InvoiceJPAComponent.getById()");
+        Invoice invoice = null;
+
+        try {
+            invoice = this.invoiceRepository.findById(s).orElse(null);
+        } catch (Exception e) {
+            log.error("Error in InvoiceJPAComponent.getById " + e.getMessage());
+        }
+
+        return invoice;
     }
 
     @Override
@@ -54,17 +64,36 @@ public class InvoiceJPAComponent implements InvoiceImpl {
 
     @Override
     public Invoice update(Invoice type) {
-        return null;
+        log.info("Call to: InvoiceJPA.update()");
+        Invoice response = null;
+
+        try {
+            response = this.invoiceRepository.save(type);
+        } catch (Exception e){
+            log.error("Error in: InvoiceJPA.update() -> "+ e.getMessage(), e);
+        }
+
+        return response;
     }
 
     @Override
     public void delete(Invoice type) {
-
+        log.info("Call to: InvoiceJPAComponent.delete()");
+        try {
+            this.invoiceRepository.delete(type);
+        } catch (Exception e){
+            log.error("Error in: InvoiceJPAComponent.delete() -> "+ e.getMessage(), e);
+        }
     }
 
     @Override
     public void deleteById(String s) {
-
+        log.info("Call to: InvoiceJPAComponent.deleteById()");
+        try {
+            this.invoiceRepository.deleteById(s);
+        } catch (Exception e){
+            log.error("Error in: InvoiceJPAComponent.deleteById() -> "+ e.getMessage(), e);
+        }
     }
 
     @Override

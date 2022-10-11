@@ -21,12 +21,30 @@ public class ClientJPAComponent implements ClientImpl {
 
     @Override
     public List<Client> getAll() {
-        return null;
+        log.info("ClientJPAComponent.getAll");
+        List<Client> clients = null;
+
+        try {
+            clients = this.clientRepository.findAll();
+        } catch (Exception e) {
+            log.error("Error in ClientJPAComponent.getAll " + e.getMessage());
+        }
+
+        return clients;
     }
 
     @Override
     public Client getById(String s) {
-        return null;
+        log.info("Call to: ClientJPAComponent.getById()");
+        Client client = null;
+
+        try {
+            client = this.clientRepository.findById(s).orElse(null);
+        } catch (Exception e) {
+            log.error("Error in ClientJPAComponent.getById " + e.getMessage());
+        }
+
+        return client;
     }
 
     @Override
@@ -59,6 +77,12 @@ public class ClientJPAComponent implements ClientImpl {
 
     @Override
     public void delete(Client type) {
+        log.info("Call to: ClientJPAComponent.delete()");
+        try {
+            this.clientRepository.delete(type);
+        } catch (Exception e){
+            log.error("Error in: ClientJPAComponent.delete() -> "+ e.getMessage(), e);
+        }
     }
 
     @Override
