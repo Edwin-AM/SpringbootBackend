@@ -28,7 +28,11 @@ public class GetAllProducts {
     public Future<ProductListResponse> execute() {
         AsyncResponse<ProductListResponse> response = null;
 
-        response = new AsyncResponse<>(this.productBusiness.getAllProducts());
+        try {
+            response = new AsyncResponse<>(this.productBusiness.getAllProducts());
+        } catch (Exception e) {
+            log.error("Error in GetAllProducts.execute -> "+ e.getMessage());
+        }
 
         return response;
     }

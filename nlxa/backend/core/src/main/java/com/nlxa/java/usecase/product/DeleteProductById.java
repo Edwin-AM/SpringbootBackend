@@ -5,6 +5,7 @@ import com.nlxa.java.dto.product.request.AddProductRequest;
 import com.nlxa.java.dto.product.request.DeleteProductByIdRequest;
 import com.nlxa.java.dto.product.response.ProductDeleteResponse;
 import com.nlxa.java.dto.product.response.ProductResponse;
+import com.nlxa.java.error.RequestException;
 import com.nlxa.java.exceptions.IncompleteDataException;
 import com.nlxa.java.product.ProductBusiness;
 import lombok.extern.slf4j.Slf4j;
@@ -30,21 +31,19 @@ public class DeleteProductById {
      * @param request DeleteProductByIdRequest
      * @return Future<ProductDeleteResponse>
      * @throws IncompleteDataException
-     * @throws IllegalArgumentException
-     * @throws NullPointerException
      */
-    public Future<ProductDeleteResponse> execute(DeleteProductByIdRequest request) throws IncompleteDataException,
-            IllegalArgumentException, NullPointerException {
+    public Future<ProductDeleteResponse> execute(DeleteProductByIdRequest request) throws RequestException {
         log.info("Call to: DeleteProductById.execute()");
         AsyncResponse<ProductDeleteResponse> response = null;
 
-        if (request == null) {
-            throw new IllegalArgumentException("Null parameter in -> DeleteProductById.execute()");
+        try {
+            if (request.getProductId().equalsIgnoreCase("")) {
+                throw new RequestException("Error in DeleteProductById.execute", "Incomplete data");
+            }
+        } catch (RequestException e) {
+            log.error("Error in DeleteProductById.execute -> "+ e.getMessage());
         }
 
-        if (request.getProductId().equalsIgnoreCase("")) {
-            throw new IncompleteDataException("Missing data -> In DeleteProductById.execute()");
-        }
         response = new AsyncResponse<>(this.productBusiness.deleteProductById(request));
         return response;
     }

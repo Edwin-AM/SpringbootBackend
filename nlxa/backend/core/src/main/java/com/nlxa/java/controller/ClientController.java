@@ -7,6 +7,7 @@ import com.nlxa.java.dto.client.request.UpdateClientRequest;
 import com.nlxa.java.dto.client.response.ClientDeleteResponse;
 import com.nlxa.java.dto.client.response.ClientResponse;
 import com.nlxa.java.dto.product.request.DeleteProductByIdRequest;
+import com.nlxa.java.error.RequestException;
 import com.nlxa.java.exceptions.IncompleteDataException;
 import com.nlxa.java.usecase.client.AddClient;
 import com.nlxa.java.usecase.client.DeleteClientById;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Slf4j
@@ -48,24 +50,23 @@ public class ClientController {
      * @return ResponseEntity<Future<ClientResponse>>
      */
     @PostMapping(value = "/add")
-    public ResponseEntity<Future<ClientResponse>> addClient(@RequestBody AddClientRequest request) {
+    public ResponseEntity<ClientResponse> addClient(@RequestBody AddClientRequest request) {
         log.info("Call to: ClientController.addClient()");
-        Future<ClientResponse> response = null;
-
+        Future<ClientResponse> result = null;
+        ClientResponse response = null;
         try {
-            response = this.addClient.execute(request);
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: ClientController.addClient() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: ClientController.addClient() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: ClientController.addClient() | NullPointerException | " + eo.getMessage());
+            result = this.addClient.execute(request);
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
             log.info("[+] Request values in ClientController.addClient: " + request.toString());
         }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -73,27 +74,26 @@ public class ClientController {
      * Update a client
      *
      * @param request UpdateClientRequest
-     * @return ResponseEntity<Future<ClientResponse>>
+     * @return ResponseEntity<ClientResponse>
      */
     @PutMapping(value = "/update")
-    public ResponseEntity<Future<ClientResponse>> updateClient(@RequestBody UpdateClientRequest request) {
+    public ResponseEntity<ClientResponse> updateClient(@RequestBody UpdateClientRequest request) {
         log.info("Call to: ClientController.updateClient()");
-        Future<ClientResponse> response = null;
-
+        Future<ClientResponse> result = null;
+        ClientResponse response = null;
         try {
-            response = this.updateClient.execute(request);
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: ClientController.updateClient() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: ClientController.updateClient() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: ClientController.updateClient() | NullPointerException | " + eo.getMessage());
+            result = this.updateClient.execute(request);
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
             log.info("[+] Request values in ClientController.updateClient: " + request.toString());
         }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -101,27 +101,26 @@ public class ClientController {
      * Delete a client given an id
      *
      * @param request DeleteClientRequest
-     * @returnResponseEntity<Future<ClientDeleteResponse>>
+     * @return ResponseEntity<ClientDeleteResponse>
      */
     @DeleteMapping(value = "/deleteById")
-    public ResponseEntity<Future<ClientDeleteResponse>> deleteById(@RequestBody DeleteClientRequest request) {
+    public ResponseEntity<ClientDeleteResponse> deleteById(@RequestBody DeleteClientRequest request) {
         log.info("Call to: ClientController.deleteById()");
-        Future<ClientDeleteResponse> response = null;
-
+        Future<ClientDeleteResponse> result = null;
+        ClientDeleteResponse response = null;
         try {
-            response = this.deleteClientById.execute(request);
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: ClientController.deleteById() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: ClientController.deleteById() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: ClientController.deleteById() | NullPointerException | " + eo.getMessage());
+            result = this.deleteClientById.execute(request);
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
             log.info("[+] Request values in ClientController.deleteById: " + request.toString());
         }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -129,26 +128,24 @@ public class ClientController {
      * Get a client given an id
      *
      * @param request GetClientByIdRequest
-     * @return ResponseEntity<Future<ClientResponse>>
+     * @return ResponseEntity<ClientResponse>
      */
     @GetMapping(value = "id")
-    public ResponseEntity<Future<ClientResponse>> getById(@RequestBody GetClientByIdRequest request) {
-        log.info("Call to: ClientController.deleteById()");
-        Future<ClientResponse> response = null;
-
+    public ResponseEntity<ClientResponse> getById(@RequestBody GetClientByIdRequest request) {
+        log.info("Call to: ClientController.getById()");
+        Future<ClientResponse> result = null;
+        ClientResponse response = null;
         try {
-            response = this.getClientById.execute(request);
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: ClientController.deleteById() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: ClientController.deleteById() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: ClientController.deleteById() | NullPointerException | " + eo.getMessage());
+            result = this.getClientById.execute(request);
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
-            log.info("[+] Request values in ClientController.deleteById: " + request.toString());
+            log.info("[+] Request values in ClientController.getById: " + request.toString());
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);

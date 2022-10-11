@@ -5,6 +5,7 @@ import com.nlxa.java.dto.client.request.AddClientRequest;
 import com.nlxa.java.dto.client.response.ClientResponse;
 import com.nlxa.java.dto.product.request.AddProductRequest;
 import com.nlxa.java.dto.product.response.ProductResponse;
+import com.nlxa.java.error.RequestException;
 import com.nlxa.java.exceptions.IncompleteDataException;
 import com.nlxa.java.product.ProductBusiness;
 import lombok.extern.slf4j.Slf4j;
@@ -29,25 +30,23 @@ public class AddProduct {
      *
      * @param request AddProductRequest
      * @return Future<ProductResponse>
-     * @throws IncompleteDataException
-     * @throws IllegalArgumentException
-     * @throws NullPointerException
+     * @throws RequestException
      */
-    public Future<ProductResponse> execute(AddProductRequest request) throws IncompleteDataException,
-            IllegalArgumentException, NullPointerException{
+    public Future<ProductResponse> execute(AddProductRequest request) throws RequestException {
         log.info("Call to: AddProduct.execute()");
         AsyncResponse<ProductResponse> response = null;
 
-        if (request == null) {
-            throw new IllegalArgumentException("Null parameter in -> AddProduct.execute()");
+        try {
+            if (request.getProductId().equalsIgnoreCase("") ||
+                    request.getPrice() <= 0 ||
+                    request.getProductName().equalsIgnoreCase("")
+            ) {
+                throw new RequestException("Error in AddProduct.execute", "Incomplete data");
+            }
+        } catch (RequestException e) {
+            log.error("Error in AddProduct.execute -> "+ e.getMessage());
         }
 
-        if (request.getProductId().equalsIgnoreCase("") ||
-                request.getPrice() <= 0 ||
-                request.getProductName().equalsIgnoreCase("")
-        ) {
-            throw new IncompleteDataException("Missing data -> In AddProduct.execute()");
-        }
         response = new AsyncResponse<>(this.productBusiness.addProduct(request));
         return response;
     }

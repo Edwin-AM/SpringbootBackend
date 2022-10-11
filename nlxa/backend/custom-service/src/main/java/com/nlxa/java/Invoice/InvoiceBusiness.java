@@ -35,10 +35,14 @@ public class InvoiceBusiness {
 
         InvoiceListResponse invoiceListResponse = null;
 
-        invoiceListResponse = new InvoiceListResponse();
-        List<Invoice> invoices = this.invoiceJPAComponent.getAll();
-        for (Invoice invoice: invoices) {
-            invoiceListResponse.getInvoiceResponseList().add(new InvoiceResponse(invoice));
+        try {
+            invoiceListResponse = new InvoiceListResponse();
+            List<Invoice> invoices = this.invoiceJPAComponent.getAll();
+            for (Invoice invoice: invoices) {
+                invoiceListResponse.getInvoiceResponseList().add(new InvoiceResponse(invoice));
+            }
+        } catch (Exception e) {
+            log.error("Error in InvoiceBusiness.getAllInvoices -> " + e.getMessage());
         }
 
         return invoiceListResponse;
@@ -54,7 +58,11 @@ public class InvoiceBusiness {
         log.info("Call to: InvoiceBusiness.addInvoice()");
         InvoiceResponse invoiceResponse = null;
 
-        invoiceResponse = new InvoiceResponse(this.invoiceJPAComponent.save(new Invoice(request))); // Hacer por separado
+        try {
+            invoiceResponse = new InvoiceResponse(this.invoiceJPAComponent.save(new Invoice(request)));
+        } catch (Exception e) {
+            log.error("Error in InvoiceBusiness.addInvoice -> " + e.getMessage());
+        }
 
         return invoiceResponse;
     }

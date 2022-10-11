@@ -5,6 +5,7 @@ import com.nlxa.java.config.AsyncResponse;
 import com.nlxa.java.dto.client.request.AddClientRequest;
 import com.nlxa.java.dto.client.request.UpdateClientRequest;
 import com.nlxa.java.dto.client.response.ClientResponse;
+import com.nlxa.java.error.RequestException;
 import com.nlxa.java.exceptions.IncompleteDataException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,25 +29,23 @@ public class UpdateClient {
      *
      * @param request UpdateClientRequest
      * @return Future<ClientResponse>
-     * @throws IncompleteDataException
-     * @throws IllegalArgumentException
-     * @throws NullPointerException
+     * @throws RequestException
      */
-    public Future<ClientResponse> execute(UpdateClientRequest request) throws IncompleteDataException,
-            IllegalArgumentException, NullPointerException {
+    public Future<ClientResponse> execute(UpdateClientRequest request) throws RequestException {
         log.info("Call to: UpdateClient.execute()");
         AsyncResponse<ClientResponse> response = null;
 
-        if (request == null) {
-            throw new IllegalArgumentException("Null parameter in -> UpdateClient.execute()");
+        try {
+            if (request.getClientId().equalsIgnoreCase("") ||
+                    request.getName().equalsIgnoreCase("") ||
+                    request.getLastName().equalsIgnoreCase("")
+            ) {
+                throw new RequestException("Error in Update.execute", "Incomplete data");
+            }
+        } catch (RequestException e) {
+            log.error("Error in Update.execute -> "+ e.getMessage());
         }
 
-        if (request.getClientId().equalsIgnoreCase("") ||
-                request.getName().equalsIgnoreCase("") ||
-                request.getLastName().equalsIgnoreCase("")
-        ) {
-            throw new IncompleteDataException("Missing data -> In UpdateClient.execute()");
-        }
         response = new AsyncResponse<>(this.clientBusiness.updateClient(request));
 
         return response;

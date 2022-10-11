@@ -28,7 +28,11 @@ public class GetAllInvoices {
     public Future<InvoiceListResponse> execute(){
         AsyncResponse<InvoiceListResponse> response = null;
 
-        response = new AsyncResponse<>(this.invoiceBusiness.getAllInvoices());
+        try {
+            response = new AsyncResponse<>(this.invoiceBusiness.getAllInvoices());
+        } catch (Exception e) {
+            log.error("Error in GetAllInvoices.execute");
+        }
 
         return response;
     }

@@ -23,7 +23,13 @@ public class InvoiceJPAComponent implements InvoiceImpl {
     public List<Invoice> getAll() {
         log.info("Call to: ProductJPAComponent.getAll()");
         List<Invoice> response = null;
-        response = this.invoiceRepository.findAll();
+
+        try {
+            response = this.invoiceRepository.findAll();
+        } catch (Exception e){
+            log.error("Error in: InvoiceJPAComponent.getAll() -> "+ e.getMessage(), e);
+        }
+
         return response;
     }
 
@@ -37,7 +43,11 @@ public class InvoiceJPAComponent implements InvoiceImpl {
         log.info("Call to: InvoiceJPAComponent.save()");
         Invoice response = null;
 
-        response = this.invoiceRepository.save(type);
+        try {
+            response = this.invoiceRepository.save(type);
+        } catch (Exception e){
+            log.error("Error in: InvoiceJPAComponent.save() -> "+ e.getMessage(), e);
+        }
 
         return response;
     }

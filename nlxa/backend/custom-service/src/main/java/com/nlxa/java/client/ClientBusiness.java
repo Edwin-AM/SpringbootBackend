@@ -3,6 +3,7 @@ package com.nlxa.java.client;
 import com.nlxa.java.domain.Client;
 import com.nlxa.java.dto.client.request.AddClientRequest;
 import com.nlxa.java.dto.client.request.DeleteClientRequest;
+import com.nlxa.java.dto.client.request.GetClientByIdRequest;
 import com.nlxa.java.dto.client.request.UpdateClientRequest;
 import com.nlxa.java.dto.client.response.ClientDeleteResponse;
 import com.nlxa.java.dto.client.response.ClientResponse;
@@ -32,7 +33,11 @@ public class ClientBusiness {
         log.info("Call to: ClientBusiness.addClient()");
         ClientResponse clientResponse = null;
 
-        clientResponse = new ClientResponse(this.clientJPAComponent.save(new Client(request)));
+        try {
+            clientResponse = new ClientResponse(this.clientJPAComponent.save(new Client(request)));
+        } catch (Exception e) {
+            log.error("Error in ClientBusiness.addClient -> " + e.getMessage());
+        }
 
         return clientResponse;
     }
@@ -47,7 +52,11 @@ public class ClientBusiness {
         log.info("Call to: ClientBusiness.updateClient()");
         ClientResponse response = null;
 
-        response = new ClientResponse(this.clientJPAComponent.update(new Client(request)));
+        try {
+            response = new ClientResponse(this.clientJPAComponent.update(new Client(request)));
+        } catch (Exception e) {
+            log.error("Error in ClientBusiness.updateClient -> " + e.getMessage());
+        }
 
         return response;
     }
@@ -62,8 +71,27 @@ public class ClientBusiness {
         log.info("Call to: ClientBusiness.deleteClientById()");
 
         ClientDeleteResponse response = new ClientDeleteResponse(false);
-        this.clientJPAComponent.deleteById(request.getClientId());
-        response.setResult(true);
+
+        try {
+            this.clientJPAComponent.deleteById(request.getClientId());
+            response.setResult(true);
+        } catch (Exception e) {
+            log.error("Error in ClientBusiness.deleteClientById -> " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    public ClientResponse getClientById(GetClientByIdRequest request) {
+        log.info("Call to: ClientBusiness.deleteClientById()");
+        ClientResponse response = null;
+
+        try {
+            Client client  = this.clientJPAComponent.getById(request.getClientId());
+            response = new ClientResponse(client);
+        } catch (Exception e) {
+            log.error("Error in ClientBusiness.getClientById -> " + e.getMessage());
+        }
 
         return response;
     }

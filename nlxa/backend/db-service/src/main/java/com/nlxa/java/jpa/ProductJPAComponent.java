@@ -75,7 +75,7 @@ public class ProductJPAComponent implements ProductImpl {
 
         try{
             this.productRepository.deleteById(s);
-        }catch (Exception e){
+        } catch (Exception e){
             log.error("Error in: ProductJPAComponent.delete() -> "+ e.getMessage(), e);
         }
     }

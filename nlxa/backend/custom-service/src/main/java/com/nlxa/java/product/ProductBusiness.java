@@ -34,11 +34,15 @@ public class ProductBusiness {
         log.info("Call to: ProductBusiness.getAllProducts()");
         ProductListResponse productListResponse = null;
 
-        productListResponse = new ProductListResponse();
-        List<Product> products = this.productJPAComponent.getAll();
+        try {
+            productListResponse = new ProductListResponse();
+            List<Product> products = this.productJPAComponent.getAll();
 
-        for (Product product: products) {
-            productListResponse.getProductResponseList().add(new ProductResponse(product));
+            for (Product product: products) {
+                productListResponse.getProductResponseList().add(new ProductResponse(product));
+            }
+        } catch (Exception e) {
+            log.error("Error in ProductBusiness.getAllProducts -> " + e.getMessage());
         }
 
         return productListResponse;
@@ -54,7 +58,11 @@ public class ProductBusiness {
         log.info("Call to: ProductBusiness.addProduct()");
         ProductResponse productResponse = null;
 
-        productResponse = new ProductResponse(this.productJPAComponent.save(new Product(request)));
+        try {
+            productResponse = new ProductResponse(this.productJPAComponent.save(new Product(request)));
+        } catch (Exception e) {
+            log.error("Error in ProductBusiness.addProduct -> " + e.getMessage());
+        }
 
         return productResponse;
     }
@@ -69,7 +77,11 @@ public class ProductBusiness {
         log.info("Call to: ProductBusiness.updateProduct()");
         ProductResponse productResponse = null;
 
-        productResponse = new ProductResponse(this.productJPAComponent.update(new Product(request)));
+        try {
+            productResponse = new ProductResponse(this.productJPAComponent.update(new Product(request)));
+        } catch (Exception e) {
+            log.error("Error in ProductBusiness.updateProduct -> " + e.getMessage());
+        }
 
         return productResponse;
     }
@@ -84,8 +96,12 @@ public class ProductBusiness {
         log.info("Call to: ProductBusiness.deleteProduct()");
         ProductDeleteResponse response = new ProductDeleteResponse(false);
 
-        this.productJPAComponent.deleteById(request.getProductId());
-        response.setResult(true);
+        try {
+            this.productJPAComponent.deleteById(request.getProductId());
+            response.setResult(true);
+        } catch (Exception e) {
+            log.error("Error in ProductBusiness.deleteProductById -> " + e.getMessage());
+        }
 
         return response;
     }

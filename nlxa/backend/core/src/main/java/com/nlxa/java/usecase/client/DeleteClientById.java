@@ -4,6 +4,7 @@ import com.nlxa.java.client.ClientBusiness;
 import com.nlxa.java.config.AsyncResponse;
 import com.nlxa.java.dto.client.request.DeleteClientRequest;
 import com.nlxa.java.dto.client.response.ClientDeleteResponse;
+import com.nlxa.java.error.RequestException;
 import com.nlxa.java.exceptions.IncompleteDataException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +28,18 @@ public class DeleteClientById {
      *
      * @param request DeleteClientRequest
      * @return Future<ClientDeleteResponse>
-     * @throws IncompleteDataException
-     * @throws IllegalArgumentException
-     * @throws NullPointerException
+     * @throws RequestException
      */
-    public Future<ClientDeleteResponse> execute(DeleteClientRequest request) throws IncompleteDataException,
-            IllegalArgumentException, NullPointerException {
+    public Future<ClientDeleteResponse> execute(DeleteClientRequest request) throws RequestException {
         log.info("Call to: DeleteClientById.execute()");
         AsyncResponse<ClientDeleteResponse> response = null;
 
-        if (request == null) {
-            throw new IllegalArgumentException("Null parameter in -> DeleteClientById.execute()");
-        }
-
-        if (request.getClientId().equalsIgnoreCase("")) {
-            throw new IncompleteDataException("Missing data -> In DeleteClientById.execute()");
+        try {
+            if (request.getClientId().equalsIgnoreCase("")) {
+                throw new RequestException("Error in DeleteClientById.execute", "Incomplete data");
+            }
+        } catch (RequestException e) {
+            log.error("Error in DeleteClientById.execute -> "+ e.getMessage());
         }
 
         response = new AsyncResponse<>(this.clientBusiness.deleteClientById(request));

@@ -5,6 +5,7 @@ import com.nlxa.java.domain.Product;
 import com.nlxa.java.dto.product.request.AddProductRequest;
 import com.nlxa.java.dto.product.request.UpdateProductRequest;
 import com.nlxa.java.dto.product.response.ProductResponse;
+import com.nlxa.java.error.RequestException;
 import com.nlxa.java.exceptions.IncompleteDataException;
 import com.nlxa.java.product.ProductBusiness;
 import lombok.extern.slf4j.Slf4j;
@@ -39,16 +40,17 @@ public class UpdateProduct {
         log.info("Call to: UpdateProduct.execute()");
         AsyncResponse<ProductResponse> response = null;
 
-        if (request == null) {
-            throw new IllegalArgumentException("Null parameter in -> UpdateProduct.execute()");
+        try {
+            if (request.getPrice() <= 0 ||
+                    request.getProductId().equalsIgnoreCase("") ||
+                    request.getProductName().equalsIgnoreCase("")
+            ) {
+                throw new RequestException("Error in UpdateProduct.execute", "Incomplete data");
+            }
+        } catch (RequestException e) {
+            log.error("Error in UpdateProduct.execute -> "+ e.getMessage());
         }
 
-        if (request.getPrice() <= 0 ||
-                request.getProductId().equalsIgnoreCase("") ||
-                request.getProductName().equalsIgnoreCase("")
-        ) {
-            throw new IncompleteDataException("Missing data -> In UpdateProduct.execute()");
-        }
         response = new AsyncResponse<>(this.productBusiness.updateProduct(request));
         return response;
     }

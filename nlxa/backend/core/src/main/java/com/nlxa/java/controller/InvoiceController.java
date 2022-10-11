@@ -3,6 +3,7 @@ package com.nlxa.java.controller;
 import com.nlxa.java.dto.invoice.request.AddInvoiceRequest;
 import com.nlxa.java.dto.invoice.response.InvoiceListResponse;
 import com.nlxa.java.dto.invoice.response.InvoiceResponse;
+import com.nlxa.java.error.RequestException;
 import com.nlxa.java.exceptions.IncompleteDataException;
 import com.nlxa.java.usecase.invoice.AddInvoice;
 import com.nlxa.java.usecase.invoice.GetAllInvoices;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Slf4j
@@ -29,23 +31,22 @@ public class InvoiceController {
     /**
      * Return a list of Invoices
      *
-     * @return ResponseEntity<Future<InvoiceListResponse>>
+     * @return ResponseEntity<InvoiceListResponse>
      */
     @GetMapping(value = "/all")
-    public ResponseEntity<Future<InvoiceListResponse>> getAllInvoices() {
+    public ResponseEntity<InvoiceListResponse> getAllInvoices() {
         log.info("Call to: InvoiceController.getAllInvoicess()");
-        Future<InvoiceListResponse> response = null;
 
+        Future<InvoiceListResponse> result = null;
+        InvoiceListResponse response = null;
         try {
-            response = this.getAllInvoices.execute();
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: InvoiceController.getAllInvoices() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: InvoiceController.getAllInvoices() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: InvoiceController.getAllInvoices() | NullPointerException | " + eo.getMessage());
+            result = this.getAllInvoices.execute();
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
             log.info("[+] Response values in InvoiceController.getAllInvoices: " + response.toString());
@@ -58,27 +59,26 @@ public class InvoiceController {
      * Insert a new Invoice
      *
      * @param request AddInvoiceRequest
-     * @return ResponseEntity<Future<InvoiceResponse>>
+     * @return ResponseEntity<InvoiceResponse>
      */
     @PostMapping(value = "/add")
-    public ResponseEntity<Future<InvoiceResponse>> addInvoice(@RequestBody AddInvoiceRequest request) {
+    public ResponseEntity<InvoiceResponse> addInvoice(@RequestBody AddInvoiceRequest request) {
         log.info("Call to: InvoiceController.addInvoice()");
-        Future<InvoiceResponse> response = null;
-
+        Future<InvoiceResponse> result = null;
+        InvoiceResponse response = null;
         try {
-            response = this.addInvoice.execute(request);
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: InvoiceController.addInvoice() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: InvoiceController.addInvoice() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: InvoiceController.addInvoice() | NullPointerException | " + eo.getMessage());
+            result = this.addInvoice.execute(request);
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
-            log.info("[+] Request values in InvoiceController.addInvoice: " + request.toString());
+            log.info("[+] Response values in InvoiceController.addInvoice: " + request.toString());
         }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

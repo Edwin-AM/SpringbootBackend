@@ -8,6 +8,7 @@ import com.nlxa.java.dto.product.request.UpdateProductRequest;
 import com.nlxa.java.dto.product.response.ProductDeleteResponse;
 import com.nlxa.java.dto.product.response.ProductListResponse;
 import com.nlxa.java.dto.product.response.ProductResponse;
+import com.nlxa.java.error.RequestException;
 import com.nlxa.java.exceptions.IncompleteDataException;
 import com.nlxa.java.usecase.product.AddProduct;
 import com.nlxa.java.usecase.product.DeleteProductById;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Slf4j
@@ -46,20 +48,18 @@ public class ProductController {
      * @return ResponseEntity<Future<ProductListResponse>>
      */
     @GetMapping(value = "all")
-    public ResponseEntity<Future<ProductListResponse>> getAllProducts(){
+    public ResponseEntity<ProductListResponse> getAllProducts(){
         log.info("Call to: ProductController.getAllProducts()");
-        Future<ProductListResponse> response = null;
-
+        Future<ProductListResponse> result = null;
+        ProductListResponse response = null;
         try {
-            response = this.getAllProducts.execute();
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: ProductController.getAllProducts() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: ProductController.getAllProducts() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: ProductController.getAllProducts() | NullPointerException | " + eo.getMessage());
+            result = this.getAllProducts.execute();
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
             log.info("[+] Response values in ProductController.getAllProducts: " + response.toString());
@@ -75,24 +75,24 @@ public class ProductController {
      * @return ResponseEntity<Future<ProductResponse>>
      */
     @PostMapping(value = "/add")
-    public ResponseEntity<Future<ProductResponse>> addProduct(@RequestBody AddProductRequest request) {
+    public ResponseEntity<ProductResponse> addProduct(@RequestBody AddProductRequest request) {
         log.info("Call to: ProductController.addProduct()");
-        Future<ProductResponse> response = null;
+        Future<ProductResponse> result = null;
+        ProductResponse response = null;
 
         try {
-            response = this.addProduct.execute(request);
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: ProductController.addProduct() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: ProductController.addProduct() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: ProductController.addProduct() | NullPointerException | " + eo.getMessage());
+            result = this.addProduct.execute(request);
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
             log.info("[+] Request values in ProductController.addProduct: " + request.toString());
         }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -103,24 +103,24 @@ public class ProductController {
      * @return ResponseEntity<Future<ProductResponse>>
      */
     @PutMapping(value = "/update")
-    public ResponseEntity<Future<ProductResponse>> updateProduct(@RequestBody UpdateProductRequest request) {
+    public ResponseEntity<ProductResponse> updateProduct(@RequestBody UpdateProductRequest request) {
         log.info("Call to: ProductController.updateProduct()");
-        Future<ProductResponse> response = null;
+        Future<ProductResponse> result = null;
+        ProductResponse response = null;
 
         try {
-            response = this.updateProduct.execute(request);
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: ProductController.updateProduct() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: ProductController.updateProduct() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: ProductController.updateProduct() | NullPointerException | " + eo.getMessage());
+            result = this.updateProduct.execute(request);
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
             log.info("[+] Request values in ProductController.updateProduct: " + request.toString());
         }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -131,24 +131,24 @@ public class ProductController {
      * @return ResponseEntity<Future<ProductDeleteResponse>>
      */
     @DeleteMapping(value = "/deleteById")
-    public ResponseEntity<Future<ProductDeleteResponse>> deleteById(@RequestBody DeleteProductByIdRequest request) {
+    public ResponseEntity<ProductDeleteResponse> deleteById(@RequestBody DeleteProductByIdRequest request) {
         log.info("Call to: ProductController.deleteById()");
-        Future<ProductDeleteResponse> response = null;
+        Future<ProductDeleteResponse> result = null;
+        ProductDeleteResponse response = null;
 
         try {
-            response = this.deleteProductById.execute(request);
-        } catch (IncompleteDataException ie) {
-            log.error("Error in: ProductController.deleteById() | IncompleteDataException | " + ie.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
-            log.error("Error in: ProductController.deleteById() | IllegalArgumentException | " + e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (NullPointerException eo) {
-            log.error("Error in: ProductController.deleteById() | NullPointerException | " + eo.getMessage());
+            result = this.deleteProductById.execute(request);
+            response = result.get();
+        } catch (ExecutionException | InterruptedException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (RequestException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } finally {
             log.info("[+] Request values in ProductController.deleteById: " + request.toString());
         }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
